@@ -10,3 +10,6 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
+bazel-*
+MODULE.bazel
+MODULE.bazel.lock
