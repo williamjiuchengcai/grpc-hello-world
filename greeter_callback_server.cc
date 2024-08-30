@@ -50,11 +50,12 @@ class GreeterServiceImpl final : public Greeter::CallbackService {
   ServerUnaryReactor* SayHello(CallbackServerContext* context,
                                const HelloRequest* request,
                                HelloReply* reply) override {
+    std::cout << "Received request: " << request->DebugString() << std::endl;
     std::string prefix("Hello ");
     reply->set_message(prefix + request->name());
-
     ServerUnaryReactor* reactor = context->DefaultReactor();
     reactor->Finish(Status::OK);
+    std::cout << "Setting reply: " << reply->DebugString() << std::endl;
     return reactor;
   }
 };
@@ -84,6 +85,11 @@ void RunServer(uint16_t port) {
 
 int main(int argc, char** argv) {
   absl::ParseCommandLine(argc, argv);
-  RunServer(absl::GetFlag(FLAGS_port));
+  auto* env_char = std::getenv("PORT");
+  if (env_char == nullptr || env_char[0] == '\0') {
+    RunServer(absl::GetFlag(FLAGS_port));
+  } else {
+    RunServer(std::atoi(env_char));
+  }
   return 0;
 }
