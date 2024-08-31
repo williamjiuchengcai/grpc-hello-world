@@ -45,7 +45,11 @@ using helloworld::HelloRequest;
 class GreeterClient {
  public:
   GreeterClient(std::shared_ptr<Channel> channel)
-      : stub_(Greeter::NewStub(channel)) {}
+      : stub_(Greeter::NewStub(channel)) {
+    channel->
+    std::cout << "State: " << channel->GetState(true) << std::endl;
+    std::cout << "Service Config: " << channel->GetServiceConfigJSON() << std::endl;
+  }
 
   // Assembles the client's payload, sends it and presents the response back
   // from the server.
@@ -99,10 +103,10 @@ int main(int argc, char** argv) {
   // are created. This channel models a connection to an endpoint specified by
   // the argument "--target=" which is the only expected argument.
   std::string target_str = absl::GetFlag(FLAGS_target);
-  // We indicate that the channel isn't authenticated (use of
-  // InsecureChannelCredentials()).
-  GreeterClient greeter(
-      grpc::CreateChannel(target_str, grpc::InsecureChannelCredentials()));
+  auto google_creds = grpc::GoogleDefaultCredentials();
+  // auto ssl_creds = grpc::SslCredentials(grpc::SslCredentialsOptions());
+  // auto creds = grpc::CompositeChannelCredentials(google_creds, ssl_creds);
+  GreeterClient greeter(grpc::CreateChannel(target_str, google_creds));
   std::string user("world");
   std::string reply = greeter.SayHello(user);
   std::cout << "Greeter received: " << reply << std::endl;

@@ -1,3 +1,5 @@
+load("@rules_go//proto:def.bzl", "go_proto_library")
+
 # Copyright 2020 the gRPC authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 load("@com_github_grpc_grpc//bazel:grpc_build_system.bzl", "grpc_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
 
 licenses(["notice"])
 
@@ -37,4 +39,11 @@ cc_grpc_library(
     srcs = [":helloworld_proto"],
     grpc_only = True,
     deps = [":helloworld_cc_proto"],
+)
+
+go_proto_library(
+    name = "helloworld_go_proto",
+    compilers = ["@rules_go//proto:go_grpc"],
+    importpath = "github.com/williamjiuchengcai/medlmpp-incubation-platform-jcwc-dev/protos",
+    proto = ":helloworld_proto",
 )
